@@ -1,0 +1,31 @@
+/* filepath: /home/azureusr/django/muzeum/staff/static/staff/styles.css */
+body.bg-dark {
+    background-color: #282b2e !important;
+}
+
+.card.bg-secondary {
+    background-color: #5b6166 !important;
+}
+
+.form-control.bg-dark {
+    background-color: #495057 !important;
+    border: 1px solid #8b8e90;
+}
+
+.form-control.bg-dark:focus {
+    background-color: #495057 !important;
+    border-color: #5b15de;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(187, 25, 246, 0.25);
+}
+
+/* Custom button color */
+.btn-primary {
+    background-color: #5b15de !important; /* Purple color */
+    border-color: #5b15de !important; /* Purple color */
+}
+
+.btn-primary:hover {
+    background-color: #3f0f98 !important; /* Darker purple color */
+    border-color: #3f0f98 !important; /* Darker purple color */
+}

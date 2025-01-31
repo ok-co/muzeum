@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    {% load static %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/dashboard" style="font-size: 1.5em; color: rgb(255, 166, 0);">Panel administracyjny</a>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add">Dodaj</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lend">Wypożycz</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/move">Przenieś</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Strona główna</a>
+                    </li>
+                </ul>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item" style="border: 2px solid yellow; border-radius: 5px;"></li>
+                        <a class="nav-link fw-bold text-warning" href="/logout">Wyloguj</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="display-4">Dodaj Eksponat</h1>
+        <p class="lead">Nowe eksponaty są początkowo składowane w magazynie. Przejdź do zakładki <a href="/move">Przenieś</a> aby go wystawić<wbr></wbr></p>
+    </div>
+
+    <div class="container mt-5">
+        <form method="POST" action="{% url 'add_exhibit' %}">
+        {% csrf_token %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+            
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field, errors in form.errors.items %}
+                    {{ errors.0 }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Tytuł</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Typ</label>
+                <input type="text" class="form-control" id="type" name="type" required>
+            </div>
+            <div class="mb-3">
+                <label for="height" class="form-label">Wysokość [cm]</label>
+                <input type="text" class="form-control" id="height" name="height" required>
+            </div>
+            <div class="mb-3">
+                <label for="width" class="form-label">Szerokość [cm]</label>
+                <input type="text" class="form-control" id="width" name="width" required>
+            </div>
+            <div class="mb-3">
+                <label for="weight" class="form-label">Waga [g]</label>
+                <input type="text" class="form-control" id="weight" name="weight" required>
+            </div>
+            <div class="mb-3">
+                <label for="valuable" class="form-label">Cenny?</label>
+                <select class="form-control" id="valuable" name="valuable" required>
+                    <option value="yes">Tak</option>
+                    <option value="no">Nie</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="artist" class="form-label">Artysta</label>
+                <input type="text" class="form-control" id="artistSearch" placeholder="Szukaj artysty..." style="width: 25%;">
+                <select class="form-control mt-2" id="artist" name="artist" required>
+                    {% for artist in artists %}
+                        <option value="{{ artist.id }}">{{ artist.first_name }} {{ artist.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <script>
+                document.getElementById('artistSearch').addEventListener('input', function() {
+                    var filter = this.value.toUpperCase();
+                    var options = document.getElementById('artist').options;
+                    for (var i = 0; i < options.length; i++) {
+                        var txtValue = options[i].textContent || options[i].innerText;
+                        options[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
+                    }
+                });
+            </script>
+
+
+
+            <button type="submit" class="btn btn-primary">Dodaj</button>
+        </form>
+    </div>
+
+
+</body>
