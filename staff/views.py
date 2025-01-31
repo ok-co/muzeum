@@ -270,3 +270,13 @@ def request_back(request):
         return redirect('lend')
 
     return redirect('lend')
+
+@login_required(login_url='login')
+def history_view(request):
+    history = History.objects.all().select_related('exhibit', 'institution', 'gallery', 'room').order_by('-start_date')
+
+    context = {
+        'history': history
+    }
+
+    return render(request, 'staff/history.html', context)

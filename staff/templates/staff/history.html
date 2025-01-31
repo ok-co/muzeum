@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dodawanie pokoju</title>
+    <title>Dodawanie artysty</title>
     {% load static %}
     {% load bootstrap5 %}
     {% bootstrap_css %}
@@ -47,43 +47,32 @@
     </nav>
 
     <div class="container mt-4">
-        <h1 class="display-4">Dodaj Salę</h1>
+        <h1 class="display-4">Historia</h1>
     </div>
 
     <div class="container mt-5">
-        <form method="post" action="{% url 'add_room' %}">
-            {% csrf_token %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Tytuł</th>
+                    <th scope="col">Akcja</th>
+                    <th scope="col">Data</th>
 
-            {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-            {% endif %}
-            
-            {% if form.errors %}
-            <div class="alert alert-danger">
-                {% for field, errors in form.errors.items %}
-                    {{ errors.0 }}
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in history %}
+                <tr>
+                    <td>{{ record.exhibit.id }}</td>
+                    <td>{{ record.exhibit.title }}</td>
+                    <td>{{ record.status }}</td>
+                    <td>{{ record.start_date }}</td>
+                </tr>
                 {% endfor %}
-            </div>
-            {% endif %}
+            </tbody>
+        </table>
 
-            <div class="mb-3">
-                <label for="roomId" class="form-label">ID Pokoju</label>
-                <input type="number" min="0" class="form-control" id="id" name="id" required>
-            </div>
-            <div class="mb-3">
-                <label for="gallerySelect" class="form-label">Wybierz Galerię</label>
-                <select class="form-select" id="gallerySelect" name="gallery" required>
-                    {% for gallery in galleries %}
-                        <option value="{{ gallery.id }}">{{ gallery.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Dodaj Pokój</button>
-        </form>
-    </div>
+    
 
 </body>

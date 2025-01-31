@@ -23,6 +23,7 @@ urlpatterns = [
     path('add_institution/', staff_views.add_institution_view, name='add_institution'),
     path('move_to_warehoues/', staff_views.move_to_warehouse, name='move_to_warehouse'),
     path('request_back', staff_views.request_back, name='request_back'),
+    path('history', staff_views.history_view, name='history'),
 
 
     

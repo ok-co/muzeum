@@ -3,6 +3,11 @@ body.bg-dark {
     background-color: #282b2e !important;
 }
 
+body {
+    background: linear-gradient(to right, #ff7e5f, #feb47b); /* Example gradient */
+    color: #fff; /* Optional: Set text color to white for better contrast */
+}
+
 .card.bg-secondary {
     background-color: #5b6166 !important;
 }
