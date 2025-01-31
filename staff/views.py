@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from muzeum.models import Gallery, Artist, History, Exhibits, Room
-from .forms import ArtistForm, GalleryForm, RoomForm, InstitutionForm, ExhibitForm, MoveForm
+from muzeum.models import Gallery, Artist, History, Exhibits, Room, Institution
+from .forms import ArtistForm, GalleryForm, RoomForm, InstitutionForm, ExhibitForm, MoveForm, LendForm
 from datetime import datetime
 
 def login_view(request): 
@@ -37,7 +37,51 @@ def move_view(request):
 
 @login_required(login_url='login')
 def lend_view(request):
-    return render(request, 'staff/lend.html')
+    if request.method == 'POST':
+        form = LendForm(request.POST)
+        if form.is_valid():
+            exhibit_id = request.POST.get('exhibit_id')
+            institution_id = request.POST.get('institution_id')
+
+            exhibit = Exhibits.objects.get(id=exhibit_id)
+            institution = Institution.objects.get(id=institution_id)
+
+            last_status = History.objects.filter(exhibit=exhibit).order_by('-start_date').first()
+
+            if last_status and last_status.status != 'wypozyczenie':
+                History.objects.create(
+                    status='wypozyczenie',
+                    exhibit=exhibit,
+                    institution=institution,
+                    start_date=datetime.now()
+                )
+
+                messages.success(request, 'Eksponat został wypożyczony pomyślnie')
+            else:
+                messages.error(request, 'Wypożyczenie nie powiodło się')
+
+
+    exhibits = Exhibits.objects.all().select_related('artist').all()
+    institutions = Institution.objects.all()
+
+    warehouse_exhibits = []
+
+    for exhibit in exhibits:
+        last_status = History.objects.filter(exhibit=exhibit).order_by('-start_date').first()
+        if last_status and last_status.status != 'wystawa':
+            warehouse_exhibits.append({
+                'exhibit': exhibit,
+                'status' : last_status.status,
+            })
+
+
+    context = {
+        'exhibits': exhibits,
+        'warehouse_exhibits': warehouse_exhibits,
+        'institutions': institutions,
+    }
+
+    return render(request, 'staff/lend.html', context)
 
 @login_required(login_url='login')
 def add_exhibit_view(request):
@@ -199,3 +243,30 @@ def move_to_warehouse(request):
         return redirect('move')
 
     return redirect('move')
+
+@login_required(login_url='login')
+def request_back(request):
+    if request.method == 'POST':
+        exhibit_id = request.POST.get('exhibit_id')
+
+        exhibit = Exhibits.objects.get(id=exhibit_id)
+        last_status = History.objects.filter(exhibit=exhibit).order_by('-start_date').first()
+
+        if last_status:
+            last_status.end_date = datetime.now()
+            last_status.save()
+
+        if last_status and last_status.status == 'wypozyczenie':
+            History.objects.create(
+                status='magazyn',
+                exhibit=exhibit,
+                start_date=datetime.now()
+            )
+
+            messages.success(request, 'Eksponat został zwrócony do magazynu')
+        else:
+            messages.error(request, 'Zwrócenie nie powiodło się')
+
+        return redirect('lend')
+
+    return redirect('lend')

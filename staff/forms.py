@@ -77,4 +77,12 @@ class MoveForm(forms.ModelForm):
         model = Exhibits
         fields = ['room_id', 'exhibit_id']
 
+class LendForm(forms.ModelForm):
+    institution_id = forms.IntegerField()
+    exhibit_id = forms.IntegerField()
+
+    class Meta:
+        model = Exhibits
+        fields = ['institution_id', 'exhibit_id']
+
         

@@ -27,7 +27,7 @@ def exhibits_view(request):
         if last_status and last_status.status == 'wypozyczenie':
             borrowed_exhibits.append({
                 'exhibit': exhibit,
-                'return_date': last_status.end_date
+                'institution': last_status.institution,
             })
         elif last_status and last_status.status == 'wystawa':
             room = last_status.room if last_status else None

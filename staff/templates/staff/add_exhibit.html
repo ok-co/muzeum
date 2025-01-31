@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>Dodawanie eksponatu</title>
     {% load static %}
     {% load bootstrap5 %}
     {% bootstrap_css %}
@@ -78,15 +78,15 @@
             </div>
             <div class="mb-3">
                 <label for="height" class="form-label">Wysokość [cm]</label>
-                <input type="text" class="form-control" id="height" name="height" required>
+                <input type="number" class="form-control" id="height" name="height" required>
             </div>
             <div class="mb-3">
                 <label for="width" class="form-label">Szerokość [cm]</label>
-                <input type="text" class="form-control" id="width" name="width" required>
+                <input type="number" class="form-control" id="width" name="width" required>
             </div>
             <div class="mb-3">
                 <label for="weight" class="form-label">Waga [g]</label>
-                <input type="text" class="form-control" id="weight" name="weight" required>
+                <input type="number" min="0" class="form-control" id="weight" name="weight" required>
             </div>
             <div class="mb-3">
                 <label for="valuable" class="form-label">Cenny?</label>

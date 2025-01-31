@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>Dodawanie pokoju</title>
     {% load static %}
     {% load bootstrap5 %}
     {% bootstrap_css %}
@@ -69,7 +69,7 @@
 
             <div class="mb-3">
                 <label for="roomId" class="form-label">ID Pokoju</label>
-                <input type="text" class="form-control" id="id" name="id" required>
+                <input type="number" min="0" class="form-control" id="id" name="id" required>
             </div>
             <div class="mb-3">
                 <label for="gallerySelect" class="form-label">Wybierz Galerię</label>

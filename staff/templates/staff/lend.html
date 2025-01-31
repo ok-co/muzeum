@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>Wypożyczanie</title>
     {% load static %}
     {% load bootstrap5 %}
     {% bootstrap_css %}
@@ -46,7 +46,98 @@
     <div class="container mt-4">
         <h1 class="display-4">Wypożyczanie</h1>
         <p class="lead">Aby ustalić stan i przygotować eksponat do wypożyczenia, ten najpierw musi znajdować się w magazynie. Przejdź do zakładki <a href="/move">Przenieś</a> aby przenieść eksponat do magazynu<wbr></wbr></p>
-
     </div>
 
+    <div class="container mt-5">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {% for field, errors in form.errors.items %}
+                {{ errors.0 }}
+            {% endfor %}
+        </div>
+    {% endif %} 
+
+    <h2>Dostępne eksponaty</h2>
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Szukaj" value="" class="form-control mb-3">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tytuł</th>
+                    <th>Autor</th>
+                    <th>Typ</th>
+                    <th>Instytucja</th>
+                    <th>Stan</th>
+                </tr>
+            </thead>
+            <tbody id="exhibitTable">
+                {% for item in warehouse_exhibits %}
+                <tr>
+                    <td>{{ item.exhibit.title }}</td>
+                    <td>{{ item.exhibit.artist.first_name }} {{ item.exhibit.artist.last_name }}</td>
+                    <td>{{ item.exhibit.type }}</td>
+                    <td>
+                        {% if item.status != 'wypozyczenie' %}
+                        <form action="{% url 'lend' %}" method="post" class="d-flex">
+                            {% csrf_token %}
+
+                            <select name="institution_id" class="form-select me-2">
+                                <option value="" selected disabled>Wybierz instytucję</option>
+                                {% for institution in institutions %}
+                                <option value="{{ institution.id }}">{{ institution.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="exhibit_id" value="{{ item.exhibit.id }}">
+                            <button type="submit" class="btn btn-primary">Wypożycz</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.status == 'wypozyczenie' %}
+                        <form action="{% url 'request_back' %}" method="post" class="d-flex">
+                            {% csrf_token %}
+                            <input type="hidden" name="exhibit_id" value="{{ item.exhibit.id }}">
+                            <button type="submit" class="btn btn-secondary">Zażądaj zwrotu</button>
+                        </form>
+                        
+                        {% else %}
+                        <span class="badge bg-success">W magazynie</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function filterTable() {
+            var input, filter, table, tr, td, i, j, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("exhibitTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                tr[i].style.display = "none";
+                td = tr[i].getElementsByTagName("td");
+                for (j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </body>

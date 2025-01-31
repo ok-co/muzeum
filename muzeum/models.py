@@ -9,9 +9,9 @@ class Artist(models.Model):
 
     class Meta:
         constraints = [
-            models.CheckConstraint(check=models.Q(birth_year__gt=0), name='valid_birth_year'),
-            models.CheckConstraint(check=models.Q(death_year__gt=0), name='valid_death_year'),
-            models.CheckConstraint(check=models.Q(death_year__gt=models.F('birth_year')), name='valid_age')
+            models.CheckConstraint(check=models.Q(birth_year__gte=0), name='valid_birth_year'),
+            models.CheckConstraint(check=models.Q(death_year__gte=0), name='valid_death_year'),
+            models.CheckConstraint(check=models.Q(death_year__gte=models.F('birth_year')), name='valid_age')
         ]
 
 class Exhibits(models.Model):
